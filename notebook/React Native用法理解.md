@@ -103,8 +103,41 @@ console结果
 >>b:1
 >>c:undefined
 ```
-当返回为空，或无return时，入参为undefined
+当**返回为空**，**或无return时**，入参为undefined
 
 ### （2）then中返回的是Promise对象
+```
+const promise = new Promise((resolve, reject) => {
+    resolve()
+})
+
+var a = (b) => {
+    console.log('this is function a ')
+}
+
+promise.then(() => {
+    let b = 1;
+    console.log('b1:' + b)
+    b = 2;
+    return new Promise((resolve, reject) => {
+        a(1)
+        resolve(1)
+    })
+}).then((x) => {
+    console.log('x:' + (x + 2))
+}).catch((err) => {
+    console.log('err:' + err)
+})
+======
+b1:1
+this is function a 
+x:3
+```
+这里新建一个Promise对象，并在对他的then回调中返回一个Promise对象，在使用二次then之后实际是第一个then方法返回的Promise对象所对应的resolve方法。
+
+### (3)then方法的的链式写法的疑问
+当返回的是非Promise对象，且无return，那么使用then方法我们实际上得到的还是一个Promise对象，那么我们继续调用then方法是什么效果呢？
+是否是一种异步函数转化为同步的写法？即必须等待上一个then中函数回调结束之后，才能进行下一个then方法中运算？
+
 
 
